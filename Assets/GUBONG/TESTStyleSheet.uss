@@ -1,0 +1,4 @@
+.BtnUi {
+    flex-basis: auto;
+    flex-direction: column;
+}

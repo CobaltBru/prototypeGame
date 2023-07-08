@@ -3,7 +3,7 @@
     <ui:VisualElement style="flex-grow: 2; background-color: rgba(0, 0, 0, 0);" />
     <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
         <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-items: stretch; align-self: auto; justify-content: center;">
-            <ui:Button text="Button" display-tooltip-when-elided="true" />
+            <ui:Button text="Button" display-tooltip-when-elided="true" name="button1" />
             <ui:Button text="Button" display-tooltip-when-elided="true" />
             <ui:Button text="Button" display-tooltip-when-elided="true" />
         </ui:VisualElement>
