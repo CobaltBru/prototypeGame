@@ -21,7 +21,7 @@ public class Cursor : MonoBehaviour
         transform.position = mousePosition;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("fdsa");
         if (collision.gameObject.tag == "wall")
