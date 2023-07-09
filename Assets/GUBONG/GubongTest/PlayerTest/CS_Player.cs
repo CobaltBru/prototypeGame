@@ -5,7 +5,7 @@ using UnityEngine;
 public class CS_Player : MonoBehaviour
 {
   
-  CS_Cursor Cursor;
+  public CS_Cursor Cursor;
 
   Vector3Int cellPos;
 
