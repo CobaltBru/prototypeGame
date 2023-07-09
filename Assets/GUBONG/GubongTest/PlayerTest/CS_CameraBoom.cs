@@ -18,12 +18,6 @@ public class CS_CameraBoom : MonoBehaviour
     }
   }
 
-  // Update is called once per frame
-  void Update()
-    {
-        
-    }
-
   void CameraMove(Vector3Int vector)
   {
     vector.z = -10;

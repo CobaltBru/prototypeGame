@@ -21,11 +21,6 @@ public class CS_Player : MonoBehaviour
     
   }
 
-  private void Update()
-  {
-    
-  }
-
   private void PlayerMove(Vector3Int vector)
   {
     gameObject.transform.position = vector; 
