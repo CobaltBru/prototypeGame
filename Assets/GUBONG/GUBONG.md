@@ -1,4 +1,4 @@
-CS_Cursor{delegate owner,positions} == player cotroller
+CS_Cursor{delegate owner,positions} == PlayerController
 
 CS_Player == Pawn
 
