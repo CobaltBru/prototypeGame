@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        
     }
 
     bool checkPlayer(Vector2 pos)
