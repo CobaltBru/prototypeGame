@@ -7,12 +7,16 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     Vector2 mousePosition;
-    public Tilemap wallTile;
+    //public Tilemap wallTile;
     public GameObject cursor;
+    public int moveCount; // 이 캐릭터의 이동 상한
     bool selectPlayer;
+
+
     void Start()
     {
         selectPlayer = false;
+        moveCount = 0;
     }
 
     
@@ -30,7 +34,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if(selectPlayer && checkTile(wallTile,mousePosition))
+                if (selectPlayer  && cursor.GetComponent<SpriteRenderer>().color==Color.blue)
                 {
                     selectPlayer = false;
                     cursor.SetActive(selectPlayer);
@@ -45,16 +49,18 @@ public class Player : MonoBehaviour
     {
         if (transform.position == (Vector3)pos)
         {
-            Debug.Log(transform.position.ToString() +" "+(Vector3)pos);
             return true;
         }
         else return false;
     }
-    bool checkTile(Tilemap tilemap, Vector2 pos)
-    {
-        Vector3Int ppos = Vector3Int.FloorToInt(pos);
-        TileBase tile = tilemap.GetTile(ppos);
-        if (tile == null) return true;
-        else return false;
-    }
+    //커서의 색으로 이동 가능을 판별함으로써 더이상 필요 없음
+    //bool checkTile(Tilemap tilemap, Vector2 pos)
+    //{
+    //    Vector3Int ppos = Vector3Int.FloorToInt(pos);
+    //    TileBase tile = tilemap.GetTile(ppos);
+    //    if (tile == null) return true;
+    //    else return false;
+    //}
+
+    
 }

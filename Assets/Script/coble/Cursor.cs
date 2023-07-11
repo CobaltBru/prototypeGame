@@ -7,6 +7,7 @@ public class Cursor : MonoBehaviour
 {
     Vector2 mousePosition;
     public Tilemap walltile;
+    public Tilemap SelectTile;
     SpriteRenderer sr;
     void Awake()
     {
@@ -38,7 +39,6 @@ public class Cursor : MonoBehaviour
         if (tile != null) return true;
         else return false;
     }
-
     //private void OnTriggerEnter2D(Collider2D collision)
     //{
     //    Debug.Log("fdsa");
