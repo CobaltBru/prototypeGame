@@ -13,10 +13,9 @@ public class Player : MonoBehaviour
     bool selectPlayer;
 
 
-    void Start()
+    void Awake()
     {
         selectPlayer = false;
-        moveCount = 0;
     }
 
     

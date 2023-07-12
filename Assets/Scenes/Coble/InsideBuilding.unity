@@ -695,7 +695,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walltile: {fileID: 2128581561}
-  SelectTile: {fileID: 0}
+  selectTile: {fileID: 516589981}
+  changeTile: {fileID: 11400000, guid: e0ec96b854cd505499327a90bf198b78, type: 2}
+  player: {fileID: 383627245}
 --- !u!212 &537317517
 SpriteRenderer:
   m_ObjectHideFlags: 0
