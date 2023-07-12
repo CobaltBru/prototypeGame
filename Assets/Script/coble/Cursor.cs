@@ -25,7 +25,7 @@ public class Cursor : MonoBehaviour
     }
     void OnEnable()
     {
-        moveCount = GetComponent<Player>().moveCount;
+        moveCount = player.GetComponent<Player>().moveCount;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition = new Vector2(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y));
         clickedList.Add(mousePosition);
