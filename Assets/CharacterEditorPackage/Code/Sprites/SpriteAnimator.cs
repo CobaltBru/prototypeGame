@@ -146,6 +146,7 @@ public class SpriteAnimator : MonoBehaviour {
         Vector3 heightAdjustment = m_CapsuleCollider.GetUpDirection() * (-m_CapsuleCollider.GetLength()*0.5f);
         m_SpriteTransformHook.transform.position = startPosition + heightAdjustment;
         StartAnimation(m_CharacterController.GetCurrentSpriteState());
+    // 2. 
     }
 
     Vector3 GetInterpolatedPosition()
@@ -180,6 +181,7 @@ public class SpriteAnimator : MonoBehaviour {
         {
             if (m_SpriteAnimator.HasState(0, Animator.StringToHash(m_Prefix + a_Name)))
             {
+        // 3. Sprites폴더 내에 존재하는 Animation 실행.
                 m_CurrentAnimationName = a_Name;
                 m_SpriteAnimator.Play(m_Prefix + a_Name);
             }

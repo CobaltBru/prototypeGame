@@ -158,6 +158,9 @@ public abstract class CharacterControllerBase : MonoBehaviour
             if (m_AbilityManager.GetCurrentModule() != null)
             {
                 return m_AbilityManager.GetCurrentModule().GetSpriteState();
+        // 1. AbilityModule을 상속받은 어빌리티의 문자열을 리턴.
+        // 각 어빌리티들은 DefaultPlayer디렉터리 내에 존재.
+        // 각 모듈은 ModuleName 과 Priority를 가짐.
             }
         }
         return GetCurrentSpriteStateForDefault();
