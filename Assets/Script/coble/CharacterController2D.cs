@@ -141,7 +141,7 @@ public class CharacterController2D : MonoBehaviour
 			
 		}
 
-		if(m_Grounded &&)
+		//if(m_Grounded &&)
 	}
 
 
