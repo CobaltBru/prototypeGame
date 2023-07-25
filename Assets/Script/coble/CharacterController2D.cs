@@ -19,7 +19,11 @@ public class CharacterController2D : MonoBehaviour
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
 
-	public int jumpCanCount;
+	public int jumpCanCount; //점프횟수
+	bool isCrouch = false; 
+
+	public float ihangTime = 0.2f; //코요테타임
+	float ihangCounter;
 
 	[Header("Events")]
 	[Space]
@@ -56,31 +60,40 @@ public class CharacterController2D : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
+				ihangCounter = ihangTime;
+				Debug.Log("reset");
 				if (!wasGrounded)
 					OnLandEvent.Invoke();
 			}
 		}
 	}
 
+	public void Crouch(bool cr)
+	{
+		isCrouch = cr;
+	}
 
-	public void Move(float move, bool crouch, bool jump)
+	public void Move(float move)
 	{
 		// If crouching, check to see if the character can stand up
-		if (!crouch)
+		if (!isCrouch)
 		{
 			// If the character has a ceiling preventing them from standing up, keep them crouching
 			if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, m_WhatIsGround))
 			{
-				crouch = true;
+                isCrouch = true;
 			}
 		}
-
 		//only control the player if grounded or airControl is turned on
 		if (m_Grounded || m_AirControl)
 		{
+			if(!m_Grounded)
+			{
+                ihangCounter -= Time.deltaTime;
+            }
 
 			// If crouching
-			if (crouch)
+			if (isCrouch)
 			{
 				if (!m_wasCrouching)
 				{
@@ -125,25 +138,33 @@ public class CharacterController2D : MonoBehaviour
 				Flip();
 			}
 		}
-		// If the player should jump...
-		if (m_Grounded && jump)
-		{
-			// Add a vertical force to the player.
-			m_Grounded = false;
-			if(crouch == true)
-			{
-                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce*0.5f));
-            }
-			else
-			{
-                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-            }
-			
-		}
-
-		//if(m_Grounded &&)
+		
 	}
 
+	public void Jump(bool checkJump)
+	{
+        // If the player should jump...
+        if (m_Grounded && checkJump && ihangCounter>0f)
+        {
+            // Add a vertical force to the player.
+            m_Grounded = false;
+			m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
+			if (isCrouch == true)
+            {
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce * 0.5f));
+            }
+            else
+            {
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+            }
+
+        }
+
+        if (!m_Grounded && !checkJump && m_Rigidbody2D.velocity.y > 0)
+        {
+            m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_Rigidbody2D.velocity.y * 0.5f);
+        }
+    }
 
 	private void Flip()
 	{
