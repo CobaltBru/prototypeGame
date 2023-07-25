@@ -23,11 +23,11 @@ public class PlayerMovement : MonoBehaviour
 
         if(Input.GetButtonDown("Jump"))
         {
-            jump = true;
+            controller.Jump();
         }
         if(Input.GetButtonUp("Jump"))
         {
-            jump = false;
+            controller.JumpDown();
         }
         if(Input.GetButtonDown("Crouch"))
         {
@@ -43,6 +43,6 @@ public class PlayerMovement : MonoBehaviour
     {
         controller.Move(horizontalMove * Time.fixedDeltaTime);
         controller.Crouch(crouch);
-        controller.Jump(jump);
+        
     }
 }

@@ -20,6 +20,7 @@ public class CharacterController2D : MonoBehaviour
 	private Vector3 m_Velocity = Vector3.zero;
 
 	public int jumpCanCount; //점프횟수
+	int jumpCounter;
 	bool isCrouch = false; 
 
 	public float ihangTime = 0.2f; //코요테타임
@@ -60,8 +61,13 @@ public class CharacterController2D : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
-				ihangCounter = ihangTime;
-				Debug.Log("reset");
+				if(m_Rigidbody2D.velocity.y<0)
+				{
+                    ihangCounter = ihangTime;
+                    jumpCounter = jumpCanCount;
+                }
+				
+				//Debug.Log("reset");
 				if (!wasGrounded)
 					OnLandEvent.Invoke();
 			}
@@ -90,6 +96,7 @@ public class CharacterController2D : MonoBehaviour
 			if(!m_Grounded)
 			{
                 ihangCounter -= Time.deltaTime;
+                
             }
 
 			// If crouching
@@ -140,16 +147,17 @@ public class CharacterController2D : MonoBehaviour
 		}
 		
 	}
-
-	public void Jump(bool checkJump)
+	public void Jump()
 	{
-        // If the player should jump...
-        if (m_Grounded && checkJump && ihangCounter>0f)
-        {
-            // Add a vertical force to the player.
+		// If the player should jump...
+		
+        Debug.Log(m_Grounded + " " + jumpCounter + " " + ihangCounter);
+        if (m_Grounded)
+		{
             m_Grounded = false;
-			m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
-			if (isCrouch == true)
+			--jumpCounter;
+            m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
+            if (isCrouch == true)
             {
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce * 0.5f));
             }
@@ -157,13 +165,26 @@ public class CharacterController2D : MonoBehaviour
             {
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
             }
-
+        }
+		else if(((ihangCounter>0.0f)&&(jumpCounter > 0))||jumpCounter>0)
+		{
+			--jumpCounter;
+            m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
+            if (isCrouch == true)
+            {
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce * 0.5f));
+            }
+            else
+            {
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+            }
         }
 
-        if (!m_Grounded && !checkJump && m_Rigidbody2D.velocity.y > 0)
-        {
-            m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_Rigidbody2D.velocity.y * 0.5f);
-        }
+        Debug.Log(m_Grounded + " " + jumpCounter + " " + ihangCounter);
+    }
+	public void JumpDown()
+	{
+        m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_Rigidbody2D.velocity.y * 0.5f);
     }
 
 	private void Flip()
