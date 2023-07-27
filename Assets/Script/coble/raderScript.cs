@@ -10,8 +10,10 @@ public class raderScript : MonoBehaviour
     public GameObject player;
     Vector2 mouse;
     Vector2 dirVec;
-
+    public float sensorDistance = 10.0f; 
     public List<Collider2D> colliders;
+    Vector2 target;
+    float targetDistance=9999999f;
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -23,25 +25,33 @@ public class raderScript : MonoBehaviour
     void Update()
     {
         mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        dirVec = mouse - (Vector2)player.transform.position;
-        transform.up = dirVec.normalized;
-        if(player.transform.localScale.x>0f)
+        deg = Quaternion.FromToRotation(Vector2.up, mouse - (Vector2)transform.position).eulerAngles.z;
+        if (player.transform.localScale.x < 0f)
         {
-            deg = transform.eulerAngles.z * -1;
+            deg *= -1;
         }
-        else
-        {
-            deg = transform.eulerAngles.z;
-        }
-        
         var rad = Mathf.Deg2Rad * (deg);
         var x = radius * Mathf.Sin(rad);
         var y = radius * Mathf.Cos(rad);
-        rigid.transform.localPosition = new Vector3(x, y);
-        
+        RaycastHit2D[] raycastHits = Physics2D.BoxCastAll(transform.position, transform.lossyScale,deg, mouse, sensorDistance, LayerMask.GetMask("Enemy"));
+        Debug.DrawRay(transform.position, mouse - (Vector2)transform.position, Color.red);
+        if(raycastHits.Length == 0)
+        {
+            Debug.Log("null");
+        }
+        else
+        {
+            for (int i = 0; i < raycastHits.Length; i++)
+            {
+                float disttmp = Vector2.Distance(transform.position, raycastHits[i].transform.position);
+                if (disttmp < targetDistance)
+                {
+                    target = raycastHits[i].transform.position;
+                    targetDistance = disttmp;
+                }
+            }
+            Debug.Log(target);
+        }
     }
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        colliders.Add(collision);
-    }
+
 }
