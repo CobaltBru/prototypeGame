@@ -4,45 +4,47 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public CharacterController2D controller;
-    public GameObject rader;
-    public float runSpeed = 40f;
-    float horizontalMove = 0f;
+    public controllerScript controller;
+    int way;
     bool jump = false;
-    bool crouch = false;
-    public int jumpCanCount = 2;
-    // Update is called once per frame
-
     void Awake()
     {
-        controller.setJumpCanCount(jumpCanCount);
+        controller = this.GetComponent<controllerScript>();
+        way = 1;
     }
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-
-        if(Input.GetButtonDown("Jump"))
+        if(Input.GetKey(KeyCode.D))
         {
-            controller.Jump();
+            way = 1;
         }
-        if(Input.GetButtonUp("Jump"))
+        if (Input.GetKey(KeyCode.A))
         {
-            controller.JumpDown();
+            way = -1;
         }
-        if(Input.GetButtonDown("Crouch"))
+        if (Input.GetKeyUp(KeyCode.D))
         {
-            crouch = true;
+            way = 0;
         }
-        else if(Input.GetButtonUp("Crouch"))
+        if (Input.GetKeyUp(KeyCode.A))
         {
-            crouch = false;
+            way = 0;
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            jump = true;
+        }
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            jump = false;
         }
     }
 
     void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime);
-        controller.Crouch(crouch);
+        controller.Move(way);
+        controller.Jump(jump);
+        jump = false;
         
     }
 }

@@ -78,7 +78,10 @@ public class CharacterController2D : MonoBehaviour
 	{
 		isCrouch = cr;
 	}
-
+	public bool isGround()
+	{
+		return m_Grounded;
+	}
 	public void Move(float move)
 	{
 		// If crouching, check to see if the character can stand up
