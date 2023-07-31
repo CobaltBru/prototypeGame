@@ -5,33 +5,26 @@ using UnityEngine;
 public class playerController : MonoBehaviour
 {
     Rigidbody2D rigid;
-    public Transform groundSensor;
-    public Transform ceilSensor;
-    public LayerMask groundLayer;
-    public float groundCheckRadius = 0.2f;
-    public float moveSpeed = 10;
-    public float gravity = 3.0f;
+    public float moveSpeed = 5; //이동속도
+    public float gravity = 3.0f; //중력
 
     public float jumpPower = 10; //점프 힘
     public int jumpAble = 2;//총 점프 가능 횟수
     int jumpCount = 0; // 현재 점프 횟수
 
 
-    Vector2 movementV = new Vector2(0, 0);
-    Vector2 stopPosition;
-    bool movement = false;
-    bool isJump = false;
-    bool comeDown = true;
-    bool onGround = true;
+    Vector2 movementV = new Vector2(0, 0); //이동 힘
+    bool movement = false; //이동여부
+    bool isJump = false; //점프여부
+    bool onGround = true; //지면에 닿아있는지
 
     bool firstGroundHit = false; //처음 바닥에 닿았을때 한번 속도 초기화
 
-    public Vector2 boxCastSize = new Vector2(0.2f, 0.05f);
-    public float boxCastMaxDistance = 0.6f;
+    public Vector2 boxCastSize = new Vector2(0.2f, 0.05f); //boxcast box사이즈
+    public float boxCastMaxDistance = 0.625f; //boxcast 거리
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        stopPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -40,12 +33,12 @@ public class playerController : MonoBehaviour
         onGround = GroundCheck();
         movementV.x = Input.GetAxisRaw("Horizontal");
         movementV.y = Input.GetAxisRaw("Vertical");
-        Debug.Log(onGround + " " + movement + " " + isJump);
         if(onGround) //지면
         {
             if(rigid.velocity.y<0)//낙하중일때 지면에 닿을경우 점프끝
             {
                 isJump = false;
+                jumpCount = 0;
             }
             if(!movement && !isJump)//x축움직임 없고 점프중도 아니면 중력 off
             {
@@ -53,7 +46,7 @@ public class playerController : MonoBehaviour
             }
             
         }
-        else
+        else //지면에서 떨어지면 중력 On
         {
             rigid.gravityScale = gravity;
         }
@@ -78,8 +71,14 @@ public class playerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.W)) //점프
         {
-            movement = true;
-            Jump();
+            
+            if(jumpCount<jumpAble) //다중점프 체크
+            {
+                movement = true;
+                jumpCount++;
+                Jump();
+            }
+            
         }
         if(Input.GetKeyUp(KeyCode.W) && !onGround) //점프중 입력 해제
         {
@@ -99,7 +98,7 @@ public class playerController : MonoBehaviour
     bool GroundCheck() //바닥 체크
     {
         RaycastHit2D[] cols = Physics2D.BoxCastAll(transform.position, boxCastSize, 0f, Vector2.down, boxCastMaxDistance, LayerMask.GetMask("Ground"));
-        for (int i = 0;i<cols.Length;i++)
+        for (int i = 0;i<cols.Length;i++)//Boxcast로 Layer가 Ground인 물체 감지
         {
             if (cols[i].collider.gameObject != gameObject)
             {
