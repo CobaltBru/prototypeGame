@@ -5,6 +5,7 @@ using UnityEngine;
 public class playerController : MonoBehaviour
 {
     Rigidbody2D rigid;
+    public playerAnimation animation;
     public float moveSpeed = 5; //이동속도
     public float gravity = 3.0f; //중력
 
@@ -22,9 +23,12 @@ public class playerController : MonoBehaviour
 
     public Vector2 boxCastSize = new Vector2(0.2f, 0.05f); //boxcast box사이즈
     public float boxCastMaxDistance = 0.625f; //boxcast 거리
+
+    SpriteRenderer spriteRenderer;
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
+        spriteRenderer= GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -38,6 +42,7 @@ public class playerController : MonoBehaviour
             if(rigid.velocity.y<0)//낙하중일때 지면에 닿을경우 점프끝
             {
                 isJump = false;
+                animation.Jump(false);
                 jumpCount = 0;
             }
             if(!movement && !isJump)//x축움직임 없고 점프중도 아니면 중력 off
@@ -54,6 +59,16 @@ public class playerController : MonoBehaviour
         {
             movement = true;
             rigid.velocity = new Vector2(movementV.x * moveSpeed, rigid.velocity.y);
+            if(movementV.x>0)
+            {
+                spriteRenderer.flipX = false;
+                
+            }
+            else
+            {
+                spriteRenderer.flipX = true;
+            }
+            animation.Walk(true);
         }
 
         if(movement == true) //이동->멈춤 순간 1회
@@ -61,6 +76,7 @@ public class playerController : MonoBehaviour
             if(movementV.x == 0 && onGround && !isJump) //점프중이 아니고 땅에 닿았고 x입력이 없으면 정지
             {
                 movement = false;
+                animation.Walk(false);
                 rigid.velocity = new Vector2(0, 0);
             }
             else if(movementV.x == 0) //점프중 x축 이동관성 감소
@@ -74,6 +90,7 @@ public class playerController : MonoBehaviour
             
             if(jumpCount<jumpAble) //다중점프 체크
             {
+                animation.Jump(true);
                 movement = true;
                 jumpCount++;
                 Jump();
