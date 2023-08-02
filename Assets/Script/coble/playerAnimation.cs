@@ -18,4 +18,8 @@ public class playerAnimation : MonoBehaviour
     {
         animation.SetBool("isJump", flag);
     }
+    public void NormalAttack()
+    {
+        animation.SetTrigger("isAttack");
+    }
 }
