@@ -20,16 +20,20 @@ public class playerController : MonoBehaviour
     bool isJump = false; //점프여부
     bool onGround = true; //지면에 닿아있는지
 
+    bool isLadder = false;
+    public float ladderSpeed = 1.0f;
+    Vector2 currentLadderV;
+    float currentLadderS;
     bool firstGroundHit = false; //처음 바닥에 닿았을때 한번 속도 초기화
 
     public Vector2 boxCastSize = new Vector2(0.2f, 0.05f); //boxcast box사이즈
     public float boxCastMaxDistance = 0.625f; //boxcast 거리
 
-    SpriteRenderer spriteRenderer;
+    
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        spriteRenderer= GetComponent<SpriteRenderer>();
+        
     }
 
     // Update is called once per frame
@@ -52,7 +56,7 @@ public class playerController : MonoBehaviour
             }
             
         }
-        else //지면에서 떨어지면 중력 On
+        else if(!onGround && !isLadder) //지면에서 떨어지면 중력 On
         {
             rigid.gravityScale = gravity;
         }
@@ -62,12 +66,12 @@ public class playerController : MonoBehaviour
             rigid.velocity = new Vector2(movementV.x * moveSpeed, rigid.velocity.y);
             if(movementV.x>0)
             {
-                spriteRenderer.flipX = false;
-                
+                ani.FlipX(false);
+
             }
             else
             {
-                spriteRenderer.flipX = true;
+                ani.FlipX(true);
             }
             ani.Walk(true);
         }
@@ -86,7 +90,7 @@ public class playerController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.W)) //점프
+        if(Input.GetKeyDown(KeyCode.W) && !isLadder) //점프
         {
             
             if(jumpCount<jumpAble) //다중점프 체크
@@ -98,7 +102,19 @@ public class playerController : MonoBehaviour
             }
             
         }
-        if(Input.GetKeyUp(KeyCode.W) && !onGround) //점프중 입력 해제
+        if(Input.GetKey(KeyCode.W) && isLadder)
+        {
+            if (movementV.x == 0) rigid.velocity = new Vector2(0, 0);
+            this.transform.position = new Vector2(currentLadderV.x, this.transform.position.y);
+            Ladder(movementV.y);
+        }
+        if (Input.GetKey(KeyCode.S) && isLadder)
+        {
+            if (movementV.x == 0) rigid.velocity = new Vector2(0, 0);
+            this.transform.position = new Vector2(currentLadderV.x, this.transform.position.y);
+            Ladder(movementV.y);
+        }
+        if (Input.GetKeyUp(KeyCode.W) && !onGround && !isLadder) //점프중 입력 해제
         {
             if(rigid.velocity.y>0) //올라가는도중에만
             {
@@ -118,7 +134,7 @@ public class playerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+       
     }
 
     bool GroundCheck() //바닥 체크
@@ -146,6 +162,34 @@ public class playerController : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.x, 0);
     }
 
+    void Ladder(float k)
+    {
+        if(this.gameObject.layer == 7)
+        {
+            rigid.gravityScale = 0.0f;
+            movement = false;
+            onGround = true;
+            isJump = false;
+            jumpCount = 0;
+            if (k>0)
+            {
+                this.transform.Translate(0, ladderSpeed * Time.deltaTime, 0);
+            }
+            if (k < 0)
+            {
+                this.transform.Translate(0, -ladderSpeed * Time.deltaTime, 0);
+            }
+        }
+    }
+    void LadderOut()
+    {
+        Debug.Log("ladder out");
+        movement = true;
+        onGround = false;
+        this.rigid.gravityScale = gravity;
+        this.gameObject.layer = 31;
+    }
+
     void OnDrawGizmos() //레이확인
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(transform.position, boxCastSize, 0f, Vector2.down, boxCastMaxDistance, LayerMask.GetMask("Ground"));
@@ -161,4 +205,26 @@ public class playerController : MonoBehaviour
             Gizmos.DrawRay(transform.position, Vector2.down * boxCastMaxDistance);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Ladder")
+        {
+            Debug.Log("inLadder");
+            isLadder= true;
+            this.gameObject.layer = 7;
+            currentLadderV = (Vector2)collision.gameObject.transform.position;
+
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.tag == "Ladder")
+        {
+            isLadder= false;
+            LadderOut();
+        }
+    }
+
 }
